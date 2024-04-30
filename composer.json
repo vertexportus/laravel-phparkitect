@@ -1,0 +1,30 @@
+{
+    "name": "vertexportus/laravel-phparkitect",
+    "description": "Laravel wrapper for PHP Arkitect",
+    "type": "library",
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^7.0|^8.0|^9.0|^10.0",
+        "phparkitect/phparkitect": "^0.3.30"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "VertexPortus\\LaravelArkitect\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Daniel Alves",
+            "email": "daniel.alves@portus.tech"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "VertexPortus\\LaravelArkitect\\Providers\\ArkitectServiceProvider"
+            ],
+            "aliases": {}
+        }
+    }
+}
