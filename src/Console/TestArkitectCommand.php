@@ -1,6 +1,6 @@
 <?php
 
-namespace VertexPortus\LaravelArkitect\Console;
+namespace LaravelArkitect\Console;
 
 use Arkitect\CLI\Config;
 use Arkitect\CLI\Runner;
@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Arkitect\Exceptions\FailOnFirstViolationException;
-use VertexPortus\LaravelArkitect\Support\NullOutput;
+use LaravelArkitect\Support\NullOutput;
 
 class TestArkitectCommand extends Command
 {

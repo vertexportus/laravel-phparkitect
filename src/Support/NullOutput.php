@@ -1,6 +1,6 @@
 <?php
 
-namespace VertexPortus\LaravelArkitect\Support;
+namespace LaravelArkitect\Support;
 
 use Symfony\Component\Console\Output\OutputInterface;
 

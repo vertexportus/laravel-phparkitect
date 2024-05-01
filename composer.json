@@ -10,7 +10,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "VertexPortus\\LaravelArkitect\\": "src/"
+            "LaravelArkitect\\": "src/"
         }
     },
     "authors": [
@@ -22,9 +22,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VertexPortus\\LaravelArkitect\\Providers\\ArkitectServiceProvider"
-            ],
-            "aliases": {}
+                "LaravelArkitect\\Providers\\ArkitectServiceProvider"
+            ]
         }
     }
 }

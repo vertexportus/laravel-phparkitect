@@ -1,9 +1,9 @@
 <?php
 
-namespace VertexPortus\LaravelArkitect\Providers;
+namespace LaravelArkitect\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use VertexPortus\LaravelArkitect\Console\TestArkitectCommand;
+use LaravelArkitect\Console\TestArkitectCommand;
 
 class ArkitectServiceProvider extends ServiceProvider
 {
