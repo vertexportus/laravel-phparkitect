@@ -9,7 +9,7 @@ use Arkitect\Expression\ForClasses\HaveNameMatching;
 use Arkitect\Expression\ForClasses\NotHaveDependencyOutsideNamespace;
 use Arkitect\Expression\ForClasses\ResideInOneOfTheseNamespaces;
 use Arkitect\Rules\Rule;
-use LaravelArkitect\Managers\RuleManager;
+use VertexPortus\LaravelArkitect\Managers\RuleManager;
 
 return static function (Config $config): void {
     require __DIR__ . '/helpers.php';

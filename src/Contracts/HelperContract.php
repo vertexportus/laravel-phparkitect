@@ -1,6 +1,6 @@
 <?php
 
-namespace LaravelArkitect\Contracts;
+namespace VertexPortus\LaravelArkitect\Contracts;
 
 interface HelperContract
 {

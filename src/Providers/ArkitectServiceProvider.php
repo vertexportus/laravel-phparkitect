@@ -1,11 +1,11 @@
 <?php
 
-namespace LaravelArkitect\Providers;
+namespace VertexPortus\LaravelArkitect\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use LaravelArkitect\Console\TestArkitectCommand;
+use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use VertexPortus\LaravelArkitect\Console\TestArkitectCommand;
 
-class ArkitectServiceProvider extends ServiceProvider
+class ArkitectServiceProvider extends LaravelServiceProvider
 {
 	/**
 	 * @return void

@@ -9,26 +9,21 @@ use Arkitect\Rules\Violation;
 use Arkitect\Rules\ViolationMessage;
 use Arkitect\Rules\Violations;
 
-class DirectlyOrIndirectlyExtend implements Expression
+class ImplementAny implements Expression
 {
-    public function __construct(private string $baseClassName) {}
-
-
     /**
      * @inheritDoc
      */
     public function describe(ClassDescription $theClass, string $because): Description {
-        return new Description("should extend (even if indirectly) {$this->baseClassName}", $because);
+        return new Description("should implement a contract", $because);
     }
 
     /**
      * @inheritDoc
      */
     public function evaluate(ClassDescription $theClass, Violations $violations, string $because): void {
-        $extends = $theClass->getExtends();
-        if (null !== $extends &&
-            ($extends->matches($this->baseClassName) || is_subclass_of($theClass->getFQCN(), $this->baseClassName))) {
-                return;
+        if (class_implements($theClass->getFQCN())) {
+            return;
         }
 
         $violation = Violation::create(

@@ -1,10 +1,10 @@
 <?php
 
-namespace LaravelArkitect\Managers;
+namespace VertexPortus\LaravelArkitect\Managers;
 
 use Arkitect\Rules\Rule;
 use Arkitect\Rules\AllClasses;
-use LaravelArkitect\Contracts\HelperContract;
+use VertexPortus\LaravelArkitect\Contracts\HelperContract;
 
 class RuleManager implements HelperContract
 {
