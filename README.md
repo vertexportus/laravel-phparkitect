@@ -1,2 +1,3 @@
 # laravel-phparkitect
-Laravel bindings for PHP Arkitect
+
+Laravel wrapper for [PHP Arkitect](https://github.com/phparkitect/arkitect)
