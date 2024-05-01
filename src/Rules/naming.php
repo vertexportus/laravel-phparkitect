@@ -57,3 +57,9 @@ because('it\'s a PHP naming convention', function () {
         ->that(new ResideInOneOfTheseNamespaces('App\*\Exceptions'))
         ->should(new HaveNameMatching('*Exception'));
 });
+
+because('it\'s a Laravel naming convention', function () {
+    return Rule::allClasses()
+        ->that(new ResideInOneOfTheseNamespaces('App\*\Contracts'))
+        ->should(new HaveNameMatching('*Contract'));
+});
