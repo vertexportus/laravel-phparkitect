@@ -2,6 +2,9 @@
 
 namespace VertexPortus\LaravelArkitect\Providers;
 
+use Illuminate\Support\ServiceProvider;
+use VertexPortus\LaravelArkitect\Console\TestArkitectCommand;
+
 class ArkitectServiceProvider extends ServiceProvider
 {
 	/**
@@ -17,6 +20,10 @@ class ArkitectServiceProvider extends ServiceProvider
 	 */
 	public function boot(): void
 	{
-		// TODO
+		if (app()->runningInConsole()) {
+			$this->commands([
+				TestArkitectCommand::class,
+			]);
+		}
 	}
 }
