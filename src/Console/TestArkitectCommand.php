@@ -18,6 +18,7 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Arkitect\Exceptions\FailOnFirstViolationException;
+use VertexPortus\LaravelArkitect\Support\NullOutput;
 
 class TestArkitectCommand extends Command
 {
@@ -33,76 +34,76 @@ EOD;
     private const ERROR_CODE = 1;
     private const DEFAULT_BASELINE_FILENAME = 'phparkitect-baseline.json';
 
+    protected string $configFile = __DIR__.'/../Support/phparkitect.php';
+    protected bool $verbose = false;
+    protected bool $stopOnFailure = false;
+    protected bool $json = false;
+
     protected $signature = 'test:arkitect {--stop-on-failure : The process will end immediately after the first violation.}
-                                           {--debug : The verbose mode to see every parsed file.}';
+                                           {--debug : The verbose mode to see every parsed file.}
+                                           {--json : Output json instead of text.}';
 
     protected $description = 'Run the architectural tests';
 
     public function handle(): int
     {
-        $input = 'check '.'--config='.__DIR__.'/../Support/phparkitect.php';
+        $this->verbose = boolval($this->option('debug'));
+        $this->stopOnFailure = boolval($this->option('stop-on-failure'));
+        $this->json = boolval($this->option('json'));
 
-        if ($this->option('debug')) {
-            $input .= ' -v';
-        }
-
-        if ($this->option('stop-on-failure')) {
-            $input .= ' --stop-on-failure';
-        }
-        return $this->executeArkitectCheck(
-            __DIR__.'/../Support/phparkitect.php',
-        );
+        return $this->executeArkitectCheck();
     }
 
     public function executeArkitectCheck(
-        $configFile,
         $output = new ConsoleOutput(),
-        $verbose = false,
-        $stopOnFailure = false,
-        $useBaseline = false,
-        $skipBaseline = false,
-        $generateBaseline = false,
-        $ignoreBaselineLinenumbers = false,
+//        $useBaseline = false,
+//        $skipBaseline = false,
+//        $generateBaseline = false,
+//        $ignoreBaselineLinenumbers = false,
     ) : int {
         ini_set('memory_limit', '-1');
         ini_set('xdebug.max_nesting_level', '10000');
         $startTime = microtime(true);
 
-        echo static::logo.PHP_EOL;
-        $output->writeln(" <info>Version: ".Version::get()."</info>".PHP_EOL);
+        if ($this->json) {
+            $output = new NullOutput();
+        }
+
+        $output->writeln(static::logo);
+        $output->writeln(" <info>Version: " . Version::get() . "</info>" . PHP_EOL);
 
         try {
-            if (true !== $skipBaseline && !$useBaseline && file_exists(self::DEFAULT_BASELINE_FILENAME)) {
-                $useBaseline = self::DEFAULT_BASELINE_FILENAME;
-            }
-
-            if ($useBaseline) {
-                if (file_exists($useBaseline)) {
-                    $output->writeln('<info>Baseline found: '.$useBaseline.'</info>');
-                }
-                else {
-                    $output->writeln('<error>Baseline file not found.</error>');
-                    return self::ERROR_CODE;
-                }
-            }
+//            if (true !== $skipBaseline && !$useBaseline && file_exists(self::DEFAULT_BASELINE_FILENAME)) {
+//                $useBaseline = self::DEFAULT_BASELINE_FILENAME;
+//            }
+//
+//            if ($useBaseline) {
+//                if (file_exists($useBaseline)) {
+//                    $output->writeln('<info>Baseline found: '.$useBaseline.'</info>');
+//                }
+//                else {
+//                    $output->writeln('<error>Baseline file not found.</error>');
+//                    return self::ERROR_CODE;
+//                }
+//            }
 
 
             /** @var string|null $phpVersion */
             $targetPhpVersion = TargetPhpVersion::create("8.3");
 
-            $progress = $verbose ? new DebugProgress($output) : new ProgressBarProgress($output);
-            if ($verbose) {
-                $output->writeln(sprintf("Config file: %s\n", $configFile));
+            $progress = $this->verbose ? new DebugProgress($output) : new ProgressBarProgress($output);
+            if ($this->verbose) {
+                $output->writeln(sprintf("Config file: %s\n", $this->configFile));
             }
 
             $config = new Config();
-            \Closure::fromCallable(function () use ($config, $configFile): ?bool {
-                $loadedConfig = require $configFile;
+            \Closure::fromCallable(function () use ($config): ?bool {
+                $loadedConfig = require $this->configFile;
                 Assert::isCallable($loadedConfig);
                 return $loadedConfig($config);
             })();
 
-            $runner = new Runner($stopOnFailure);
+            $runner = new Runner($this->stopOnFailure);
             try {
                 $runner->run($config, $progress, $targetPhpVersion);
             } catch (FailOnFirstViolationException $e) {
@@ -112,23 +113,23 @@ EOD;
 
 //            echo(json_encode($violations, JSON_PRETTY_PRINT));
 //
-            if (false !== $generateBaseline) {
-                if (null === $generateBaseline) {
-                    $generateBaseline = self::DEFAULT_BASELINE_FILENAME;
-                }
-                $this->saveBaseline($generateBaseline, $violations);
-
-                $output->writeln('<info>Baseline file \''.$generateBaseline.'\'created!</info>');
-                $this->printExecutionTime($output, $startTime);
-
-                return self::SUCCESS_CODE;
-            }
-
-            if ($useBaseline) {
-                $baseline = $this->loadBaseline($useBaseline);
-
-                $violations->remove($baseline, $ignoreBaselineLinenumbers);
-            }
+//            if (false !== $generateBaseline) {
+//                if (null === $generateBaseline) {
+//                    $generateBaseline = self::DEFAULT_BASELINE_FILENAME;
+//                }
+//                $this->saveBaseline($generateBaseline, $violations);
+//
+//                $output->writeln('<info>Baseline file \''.$generateBaseline.'\'created!</info>');
+//                $this->printExecutionTime($output, $startTime);
+//
+//                return self::SUCCESS_CODE;
+//            }
+//
+//            if ($useBaseline) {
+//                $baseline = $this->loadBaseline($useBaseline);
+//
+//                $violations->remove($baseline, $ignoreBaselineLinenumbers);
+//            }
 
             if ($violations->count() > 0) {
                 $this->printViolations($violations, $output);
@@ -167,6 +168,10 @@ EOD;
 
     private function printViolations(Violations $violations, OutputInterface $output): void
     {
+        if ($this->json) {
+            (new ConsoleOutput())->writeln(json_encode($violations, JSON_PRETTY_PRINT));
+            return;
+        }
         $output->writeln('<error>ERRORS!</error>');
         $output->writeln(sprintf('%s', $violations->toString()));
         $output->writeln(sprintf('<error>%s VIOLATIONS DETECTED!</error>', \count($violations)));
