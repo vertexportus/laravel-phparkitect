@@ -36,12 +36,6 @@ because('it\'s a Laravel naming convention', function () {
 
 because('it\'s a Laravel naming convention', function () {
     return Rule::allClasses()
-        ->that(new ResideInOneOfTheseNamespaces('App\*\Services'))
-        ->should(new HaveNameMatching('*Service'));
-});
-
-because('it\'s a Laravel naming convention', function () {
-    return Rule::allClasses()
         ->that(new ResideInOneOfTheseNamespaces('App\*\Commands'))
         ->should(new HaveNameMatching('*Command'));
 });
