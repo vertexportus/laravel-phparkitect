@@ -15,7 +15,7 @@ because('controllers should inherit from Laravel\'s base Controller class', func
 because('commands should inherit from Laravel\'s base Command class', function () {
     return Rule::allClasses()
         ->that(new ResideInOneOfTheseNamespaces('App\*\Commands'))
-        ->should(new Extend('Illuminate\Console\Command'));
+        ->should(new DirectlyOrIndirectlyExtend('Illuminate\Console\Command'));
 });
 
 because('exceptions should inherit from base PHP Exception class', function () {
